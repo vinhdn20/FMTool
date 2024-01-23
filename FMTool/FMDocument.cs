@@ -40,47 +40,77 @@ namespace FMTool
                             parent.Child.Add(current);
                             current.Parent = parent;
 
-                            current.Tag = LoadTag(i, line);
-                            current.Attribute = LoadAttribute(i, line);
-
-                            if (line[i] == '>')
-                            {
-                                current = parent;
-                                parent = parent.Parent;
-                            }
+                            current.Tag = LoadTag(ref i, line);
+                            (current.Attribute, current.IsDoneAttribute) = LoadAttribute(ref i, line);
                         }
 
-                        if (line[i] == '>')
+                        if (i < line.Length && line[i] == '>')
                         {
+                            current.IsDoneAttribute = true;
+                            if (parent.Tag == null)
+                            {
+                                Tags.Add(current);
+                            }
                             current = parent;
-                            parent = parent.Parent;
+                            if (parent.Tag != null)
+                                parent = parent.Parent;
+                            break;
+                        }
+
+                        else if (current.Tag != null && !current.IsDoneAttribute)
+                        {
+                            string? addAttri;
+                            (addAttri, current.IsDoneAttribute) = LoadAttribute(ref i, line);
+                            current.Attribute += addAttri;
                         }
                     }
                 }
             }
         }
 
-        private string LoadTag(int i, string line)
+        public FMTag? FindTag(string tagName, bool isChildren = false)
+        {
+            for (int i = 0; i < Tags.Count(); i++)
+            {
+                var tag = Tags[i];
+                var rs = tag.FindTag(tagName);
+                if(rs != null)
+                {
+                    return rs;
+                }
+            }
+            return null;
+        }
+
+
+        private string LoadTag(ref int i, string line)
         {
             StringBuilder sb = new StringBuilder();
-            while(i < line.Length && line[i] != ' ' && line[i] != '>')
+            while(i < line.Length && line[i + 1] != ' ' && line[i + 1] != '>')
             {
                 i++;
                 sb.Append(line[i]);
             }
+            i++;
             return sb.ToString();
         }
 
-        private string? LoadAttribute(int i, string line)
+        private (string?, bool) LoadAttribute(ref int i, string line)
         {
-            if(i == line.Length)    return null;
+            if(i == line.Length)    return (null, false);
             StringBuilder sb = new StringBuilder();
-            while(i < line.Length && line[i] != '>')
+            bool isDone = false;
+            while(i < line.Length -1 && line[i+1] != '>')
             {
                 i++;
                 sb.Append(line[i]);
             }
-            return sb.ToString();
+            if(i < line.Length - 1 && line[i+1] == '>')
+            {
+                isDone = true;
+            }
+            i++;
+            return (sb.ToString(), isDone);
         }
     }
 }

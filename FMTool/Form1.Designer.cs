@@ -30,6 +30,7 @@
         {
             btnStart = new Button();
             textBox1 = new TextBox();
+            NameTagtxt = new TextBox();
             SuspendLayout();
             // 
             // btnStart
@@ -50,11 +51,20 @@
             textBox1.TabIndex = 2;
             textBox1.Text = "C:\\Users\\vinhd\\Downloads\\new tool\\Demo tool (3)\\Demo tool\\testXML\\e_FCMP.mif";
             // 
+            // NameTagtxt
+            // 
+            NameTagtxt.Location = new Point(92, 95);
+            NameTagtxt.Name = "NameTagtxt";
+            NameTagtxt.Size = new Size(521, 27);
+            NameTagtxt.TabIndex = 3;
+            NameTagtxt.Text = "DocFileInfo";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(704, 217);
+            Controls.Add(NameTagtxt);
             Controls.Add(textBox1);
             Controls.Add(btnStart);
             Name = "Form1";
@@ -66,5 +76,6 @@
         #endregion
         private Button btnStart;
         private TextBox textBox1;
+        private TextBox NameTagtxt;
     }
 }
